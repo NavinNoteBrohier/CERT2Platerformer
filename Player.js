@@ -2,7 +2,7 @@ var Player = function()
 {
 	this.image = document.createElement("img");
 	this.x = canvas.width/2;
-	this.y = canvast.height/2;
+	this.y = canvas.height/2;
 	this.width = 159;
 	this.height = 163;
 	
@@ -20,7 +20,7 @@ Player.prototype.update = function(deltaTime)
 	if (typeof(this.rotation) === "undefined")
 		this.rotation = 0; 
 	
-	if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true )
+	if (keyboard.isKeyDown(keyboard.KEY_SPACE))
 	{
 			this.rotation -= deltaTime;
 	}
@@ -32,8 +32,6 @@ Player.prototype.update = function(deltaTime)
 
 Player.prototype.draw = function(context)
 {
-//	context.drawImage(this.image, this.x, this.y);
-
 	context.save();
 		context.translate(this.x, this.y);
 		context.rotate(this.rotation);

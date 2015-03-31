@@ -5,8 +5,8 @@ var Keyboard = function()	{
 		window.addEventListener( "keydown", function(evt) {self.onKeyDown(evt);}, false);
 		window.addEventListener( "keyup", function(evt) {self.onKeyUp(evt);}, false);
 		
-		this.keyListeners = new array();
-		this.keys = new array();
+		this.keyListeners = new Array();
+		this.keys = new Array();
 		
 		this.KEY_SPACE = 12;
 		this.KEY_LEFT = 37
@@ -35,7 +35,7 @@ Keyboard.prototype.onKeyUp = function(evt)
 
 Keyboard.prototype.isKeyDown = function(keyCode)
 {
-	this.keys[evt.keyCode];
+	return this.keys[keyCode];
 
 };
 

@@ -54,7 +54,7 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 	
-	context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
+	//context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
 	
 	player.update(deltaTime);
 	player.draw(context);
