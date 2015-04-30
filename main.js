@@ -4,6 +4,10 @@ var context = canvas.getContext("2d");
 var startFrameMillis = Date.now();
 var endFrameMillis = Date.now();
 
+//incompetech
+//Double fine adventure
+//gdc vault
+//extra credits
 // This function will return the time in seconds since the function 
 // was last called
 // You should only call this function once per frame
@@ -39,13 +43,127 @@ var SCREEN_HEIGHT = canvas.height;
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
+	//reference 
+var METER = TILE;
+
+var GRAVITY = METER * 9.8 * 6;
+	//Maximum speed our player can go in x  AND  y direction
+var MAXDX = METER * 10;
+
+var MAXDY = METER * 15;
+
+var ACCEL = MAXDX * 2;
+
+var FRICTION = MAXDX * 6;
+
+var JUMP = METER * 1500;
+
+///////////////////////////////////////////////
+//var music = new Audio("background.ogg");
+//music.loop = true;
+//music.play();
+
+//var isSFXplaying = false;
+//var sfx = new Audio("fireEffect.ogg");
+//sfx.onended = function(){isSFXplaying = false};
+
+//sfx.Playing = function() {
+//	if (!isSFXplaying)
+//	{	
+//		sfx.play();
+//		isSFXplaying = false;
+//	}	
+//};
+//////////////////////////////////////////////
+var music = new Howl(
+{
+		urls : ["background.ogg"],
+		loop : true,
+		buffer : true,
+		volume : 0.5
+});
+
+music.play();
+//////////////////////////////////////////////
+
+var cells = [];
+function initialise()
+{
+	for (var LIndex = 0; LIndex < LAYER_COUNT - 1; LIndex++)
+	{
+		cells[LIndex] = [];
+		var itemIndex = 0;
+		
+		for (var y = 0; y < level1.layers[LIndex].height; y++)
+		{
+			cells[LIndex][y] = [];
+			for (var x = 0; x < level1.layers[LIndex].width; x++)
+			{
+				if (level1.layers[LIndex].data[itemIndex] !=0)
+				{
+					cells[LIndex][y][x] = 1;
+					cells[LIndex][y - 1][x] = 1;
+					cells[LIndex][y - 1][x + 1] = 1;
+					cells[LIndex][y][x + 1] = 1;
+				}
+				else if (cells[LIndex][y][x] != 1)
+				{
+					cells[LIndex][y][x] = 0;
+				}
+				itemIndex++;
+			}
+		}
+	}
+}
+
+function cellAtPixelCoord(layers, x, y)
+{
+	if (x < 0 || x > SCREEN_WIDTH || y < 0)
+		return 1;
+	if (y > SCREEN_HEIGHT)
+		return 0;
+		
+	return  cellAtTileCoord(layers, pixelToTile(x), pixelToTile(y));
+};
+
+function cellAtTileCoord(layers, Tx, Ty)
+{
+	if (Tx < 0 || Tx >= MAP.tw || Ty < 0)
+		return 1;
+		
+	if (Ty >= MAP.th)
+		return 0;
+	
+	return cells[layers][Ty][Tx];
+};
+
+function tileToPixel(tile)
+{
+	return tile * TILE;
+};
+
+function pixelToTile(pixel)
+{
+	return Math.floor(pixel/TILE);
+};
+
+function bound(value, min, max)
+{
+	if (value < min)
+		return min;
+	if (value > max)
+		return max;
+		
+	return value;
+};
 
 // load an image to draw
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
-
+initialise();
 var keyboard = new Keyboard();
 var player = new Player();
+
 
 function run()
 {
@@ -54,10 +172,11 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 	
-	//context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
+	drawMap();
+	//	context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
 	
 	player.update(deltaTime);
-	player.draw(context);
+	player.draw(context, SCREEN_HEIGHT/2, SCREEN_WIDTH/2);
 		
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -68,6 +187,8 @@ function run()
 		fps = fpsCount;
 		fpsCount = 0;
 	}		
+	
+	
 		
 	// draw the FPS
 	context.fillStyle = "#f00";
