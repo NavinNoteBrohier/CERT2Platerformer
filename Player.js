@@ -61,10 +61,9 @@ var Player = function()
 	
 	this.falling = true;
 	this.jumping = false;
-	
 	this.image.src = "hero.png";
 };
-
+var KEYPRESS = 0;
 Player.prototype.update = function(deltaTime)
 {
 		this.Sprite.update(deltaTime);
@@ -75,6 +74,7 @@ Player.prototype.update = function(deltaTime)
 		
 		//check Keypress events
 		
+		
 		if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
 		{
 			left = true;
@@ -84,6 +84,7 @@ Player.prototype.update = function(deltaTime)
 			this.falling == false ){
 			this.Sprite.setAnimation(ANIM_WALK_LEFT)
 			}
+			
 		}
 		if (keyboard.isKeyDown(keyboard.KEY_RIGHT) == true){
 			right = true;
@@ -93,6 +94,7 @@ Player.prototype.update = function(deltaTime)
 			this.falling == false ){
 			this.Sprite.setAnimation(ANIM_WALK_RIGHT)
 			}
+			
 		}
 		
 		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true && right)
@@ -112,13 +114,14 @@ Player.prototype.update = function(deltaTime)
 			{
 				this.Sprite.setAnimation(ANIM_JUMP_LEFT)
 			}
+			KEYPRESS++
 			
 		}
 		
 		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true && left)
 		{
 			jump = true;
-			if (this.Sprite.currentAnimation != ANIM_JUMP_RIGHT)
+			if (this.Sprite.currentAnimation != ANIM_JUMP_LEFT)
 			{
 				this.Sprite.setAnimation(ANIM_JUMP_LEFT)
 			}
@@ -128,7 +131,51 @@ Player.prototype.update = function(deltaTime)
 		if (jump == true)
 		{
 			SFX.play()
+			SFX.stop()
 		};
+		
+		if (jump == false && this.velocity.x == 0 && this.velocity.y == 0 && KEYPRESS > 0)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_LEFT)
+		}
+		
+		if (jump == true && this.velocity.x == 0)
+		{
+			this.Sprite.setAnimation(ANIM_JUMP_LEFT) 
+		}
+		
+		if (jump == true && this.velocity.x == 0)
+		{
+			this.Sprite.setAnimation(ANIM_JUMP_LEFT)
+		}
+		
+		if (jump == true && KEYPRESS == 0 && this.currentAnimation != ANIM_IDLE_LEFT)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_LEFT)
+		}
+		
+	
+		
+		if (jump == false && this.velocity.x == 0 && this.direction == LEFT)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_LEFT)
+		};
+		
+		if (this.velocity.x == 0 && this.direction == LEFT)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_LEFT)
+		}
+			
+		if (this.velocity.x == 0 && this.direction == RIGHT)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_RIGHT)
+		}
+		
+		if (this.velocity.y == 0 && this.velocity.x == 0 && this.direction == RIGHT)
+		{
+			this.Sprite.setAnimation(ANIM_IDLE_RIGHT)
+		};
+	
 		
 		var wasLeft = this.velocity.x < 0;
 		var wasRight = this.velocity.x > 0;
@@ -189,6 +236,7 @@ Player.prototype.update = function(deltaTime)
 				this.velocity.y = 0;
 				this.falling = false;
 				this.jumping = false;
+				this.land = true;
 				ny = 0; // no longer overlapping the cell below
 			}
 		}
@@ -229,10 +277,6 @@ Player.prototype.draw = function()
 {	
 	
 	this.Sprite.draw(context, this.position.x - worldOffsetX, this.position.y)
-	//context.save();
-	//	context.translate(this.x, this.y);
-	//	context.rotate(this.rotation);
-	//	context.drawImage(this.image, -this.width/2, -this.height/2);
-	//context.restore();
+	
 
 };

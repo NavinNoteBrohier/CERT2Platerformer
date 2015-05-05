@@ -38,6 +38,7 @@ var BACCEL = MAXDX * -2;
 var FRICTION = MAXDX * 6;
 var JUMP = METER * -1500;
 var LIVES = 3;
+var land = true;
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 var keyboard = new Keyboard();
@@ -55,19 +56,27 @@ var music = new Howl
 		loop : true,
 		buffer : true,
 		volume : 0.5,
-		PLAY : false
+		
 });
 
-
-
-function MUSIC()
-{	
-	music.play();		
-};
+var ISPLAYING = false
 
 function MUTE()
 {
-	music.stop();
+	if(ISPLAYING == true)
+	{
+		music.stop();
+		ISPLAYING = false;
+	}
+};
+
+function MUSIC()
+{	
+	if(ISPLAYING == false)
+	{
+		music.play()
+		ISPLAYING = true
+	}
 };
 
 var cells = [];
@@ -160,6 +169,7 @@ function RUNSPLASHSCREEN(deltaTime)
 	context.fillText( "SUPER AMAZING PLATFORM ADVENTURE", SCREEN_HEIGHT/6.6, SCREEN_WIDTH/3);
 };
 
+MUSIC();
 function RUNGAMESCREEN(deltaTime)
 {
 	
@@ -254,7 +264,7 @@ function RUNGAMEWIN(deltaTime)
 		player.Sprite.setAnimation(ANIM_IDLE_LEFT);
 	}
 };
-MUSIC();
+
 function run()
 {
 	
@@ -303,6 +313,7 @@ function run()
 	context.fillText("x " + player.position.x + " y " + player.position.y, 5, 40, 100);
 	context.fillText(splashTimer +" "+ winTimer +" "+ loseTimer, 5, 60, 100);
 	context.fillText(GAMESTATE, 5, 80, 100);
+	context.fillText(KEYPRESS, 5, 120, 100);
 
 };
 
