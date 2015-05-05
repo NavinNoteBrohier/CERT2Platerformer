@@ -45,7 +45,7 @@ var level1 = {
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/Level and Tileset\/tileset.png",
+         "image":"tilesets.png",
          "imageheight":1024,
          "imagewidth":1024,
          "margin":2,

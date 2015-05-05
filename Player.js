@@ -10,6 +10,15 @@ var ANIM_JUMP_RIGHT = 4;
 var ANIM_WALK_RIGHT = 5;
 var ANIM_MAX = 6;
 
+var SFX = new Howl
+({
+		urls : ["BOING.mp3"],
+		loop : false,
+		buffer : true,
+		volume : 0.3,
+		PLAY : false
+});
+
 var Player = function()
 {
 	this.Sprite = new Sprite("ChuckNorris.png");
@@ -40,8 +49,8 @@ var Player = function()
 	this.image = document.createElement("img");
 	this.position = new Vector2()
 	//this.position.set( 9 * TILE, 0 * TILE);
-	this.position.x = 9 * TILE;
-	this.position.y = 0 * TILE;
+	this.position.x = 11 * TILE;
+	this.position.y = 7 * TILE;
 	this.width = 159;
 	this.height = 163;
 	
@@ -72,9 +81,8 @@ Player.prototype.update = function(deltaTime)
 			this.direction = LEFT;
 			if (this.Sprite.currentAnimation != ANIM_WALK_LEFT &&
 			this.jumping == false &&
-			this.falling == false)
-			{
-				this.Sprite.setAnimation(ANIM_WALK_LEFT)
+			this.falling == false ){
+			this.Sprite.setAnimation(ANIM_WALK_LEFT)
 			}
 		}
 		if (keyboard.isKeyDown(keyboard.KEY_RIGHT) == true){
@@ -87,12 +95,40 @@ Player.prototype.update = function(deltaTime)
 			}
 		}
 		
-		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true){
+		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true && right)
+		{
 			jump = true;
-			if (this.Sprite.currentAnimation != ANIM_JUMP_LEFT){
-			this.sprite.setAnimation(ANIM_JUMP_LEFT)}
-		};
+			if (this.Sprite.currentAnimation != ANIM_JUMP_LEFT)
+			{
+				this.Sprite.setAnimation(ANIM_JUMP_RIGHT)
+			}
+			
+		}
+		
+		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
+		{
+			jump = true;
+			if(this.left == true)
+			{
+				this.Sprite.setAnimation(ANIM_JUMP_LEFT)
+			}
+			
+		}
+		
+		if (keyboard.isKeyDown(keyboard.KEY_SPACE) == true && left)
+		{
+			jump = true;
+			if (this.Sprite.currentAnimation != ANIM_JUMP_RIGHT)
+			{
+				this.Sprite.setAnimation(ANIM_JUMP_LEFT)
+			}
+			
+		}
 
+		if (jump == true)
+		{
+			SFX.play()
+		};
 		
 		var wasLeft = this.velocity.x < 0;
 		var wasRight = this.velocity.x > 0;
@@ -101,7 +137,7 @@ Player.prototype.update = function(deltaTime)
 			acceleration.y = GRAVITY;
 		
 		if (left)
-			acceleration.x -= ACCEL;
+			acceleration.x += BACCEL;
 		else if (wasLeft)
 			acceleration.x += FRICTION;
 			
@@ -112,7 +148,7 @@ Player.prototype.update = function(deltaTime)
 		
 		if ( jump && !this.jumping && !falling)
 		{
-			acceleration.y -= JUMP;
+			acceleration.y += JUMP;
 			this.jumping -= true;
 		};
 		
@@ -135,7 +171,9 @@ Player.prototype.update = function(deltaTime)
 		var ny = (this.position.y) % TILE;
 		
 		var cell = cellAtTileCoord(LAYER_PLATFORMS, Tx, Ty);
+		var cellUp = cellAtTileCoord(LAYER_PLATFORMS, Tx, Ty +1);
 		var cellRight = cellAtTileCoord(LAYER_PLATFORMS, Tx + 1, Ty);
+		var cellLeft = cellAtTileCoord(LAYER_PLATFORMS, Tx - 1, Ty);
 		var cellDown = cellAtTileCoord(LAYER_PLATFORMS, Tx, Ty + 1);
 		var cellDiag = cellAtTileCoord(LAYER_PLATFORMS, Tx + 1, Ty + 1);
 		
@@ -175,13 +213,15 @@ Player.prototype.update = function(deltaTime)
 				this.position.x = tileToPixel(Tx);
 				this.velocity.x = 0; 
 			}
-			
 		}
 	////left
-		else if ( this.velocity.x < 0)
+		if (this.velocity.x < 0)
 		{
-			this.position.x = tileToPixel (Tx + 1);
+			if((cellLeft && !cell) || (cellLeft && !cellDiag && ny))
+			{
+			this.position.x = tileToPixel (Tx) + 1;
 			this.velocity.x = 0;
+			}
 		}
 	};
 
